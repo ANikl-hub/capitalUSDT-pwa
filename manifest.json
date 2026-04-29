@@ -2,33 +2,24 @@
   "name": "Capital — накопления в USDT",
   "short_name": "Capital",
   "description": "Учёт накоплений в USDT с дневной отчётностью",
-  "start_url": "/",
+  "start_url": "/capitalUSDT-pwa/",
   "display": "standalone",
   "theme_color": "#0B0C0E",
   "background_color": "#0B0C0E",
   "orientation": "portrait",
-  "scope": "/",
+  "scope": "/capitalUSDT-pwa/",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/capitalUSDT-pwa/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "/capitalUSDT-pwa/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "screenshot.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Главный экран приложения"
     }
   ]
 }
