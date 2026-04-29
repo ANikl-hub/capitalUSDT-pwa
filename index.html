@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#0B0C0E">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Capital USDT">
+    <meta name="description" content="Учёт накоплений в USDT с дневной отчётностью">
+    <meta name="keywords" content="usdt, накопления, криптовалюта, трекинг, финансы">
+    <meta name="author" content="Capital">
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    
+    <title>Capital — накопления в USDT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background: #0B0C0E;
+            font-family: -apple-system, 'Inter', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            letter-spacing: -0.01em;
+        }
+        .app {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .card {
+            background: #121316;
+            border-radius: 28px;
+            padding: 24px 20px;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 500;
+            color: #8E8E92;
+            margin-bottom: 0.4rem;
+        }
+        .value-large {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        .value-negative {
+            color: #C96A53;
+        }
+        .value-medium {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #FFFFFF;
+        }
+        .metrics-grid {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+            justify-content: flex-start;
+        }
+        .metric {
+            flex: 0 0 auto;
+            min-width: 130px;
+        }
+        .goal-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .goal-title {
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: #FFFFFF;
+            letter-spacing: -0.3px;
+            word-break: break-word;
+            flex: 1;
+        }
+        .goal-badge {
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: rgba(255,255,255,0.04);
+            padding: 8px 16px;
+            border-radius: 100px;
+            color: #CFCFD4;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 0.5px solid rgba(255,255,255,0.1);
+            white-space: nowrap;
+        }
+        .goal-badge:active {
+            background: rgba(255,255,255,0.12);
+            transform: scale(0.96);
+        }
+        .progress-container {
+            margin: 24px 0 20px;
+        }
+        .progress-track {
+            background: #26272D;
+            border-radius: 100px;
+            height: 6px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #D4AF37;
+            width: 0%;
+            height: 100%;
+            border-radius: 100px;
+            transition: width 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            font-weight: 450;
+            color: #9A9AA0;
+        }
+        .form-area {
+            margin: 28px 0 20px;
+        }
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .field {
+            width: 100%;
+        }
+        .field label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #8E8E94;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            background: #1A1B1F;
+            border: 1px solid #2A2B30;
+            border-radius: 18px;
+            padding: 14px 16px;
+            font-size: 1rem;
+            color: #FFFFFF;
+            font-family: inherit;
+            outline: none;
+            transition: border 0.15s, background 0.15s;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 0.5;
+            background: #2A2B30;
+        }
+        input:focus, select:focus {
+            border-color: #D4AF37;
+            background: #1F2025;
+        }
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A0A0A8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+        .btn {
+            background: #D4AF37;
+            border: none;
+            border-radius: 28px;
+            padding: 14px 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #0B0C0E;
+            cursor: pointer;
+            transition: all 0.1s;
+            font-family: inherit;
+            margin-top: 8px;
+            width: 100%;
+        }
+        .btn:active {
+            background: #E5C252;
+            transform: scale(0.97);
+        }
+        
+        .data-section {
+            margin-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 20px;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 500;
+            color: #8E8E92;
+        }
+        .collapse-btn {
+            background: none;
+            border: 0.5px solid #2D2E35;
+            color: #B0B0B8;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.1s;
+        }
+        .collapse-btn:active {
+            background: rgba(255,255,255,0.05);
+            transform: scale(0.96);
+        }
+        .data-content {
+            transition: all 0.2s ease;
+        }
+        .data-content.collapsed {
+            display: none;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: 1px solid #2D2E35;
+            border-radius: 40px;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #B0B0B8;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .tab-btn.active {
+            background: #D4AF37;
+            border-color: #D4AF37;
+            color: #0B0C0E;
+        }
+        .tab-btn:active {
+            transform: scale(0.97);
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        
+        .history-list {
+            max-height: 420px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .transaction-item {
+            background: #0F1013;
+            border-radius: 20px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 0.5px solid rgba(255,255,255,0.04);
+        }
+        .transaction-left {
+            flex: 1;
+            padding-right: 10px;
+        }
+        .transaction-type {
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            margin-bottom: 2px;
+        }
+        .income-type { color: #00C087; }
+        .expense-type { color: #FF6B4A; }
+        .correction-type { color: #6C8EBF; }
+        .transaction-note {
+            font-size: 0.7rem;
+            color: #CACAD2;
+            font-weight: 450;
+            margin: 2px 0;
+            word-break: break-word;
+        }
+        .transaction-date {
+            font-size: 0.55rem;
+            color: #6F6F78;
+        }
+        .transaction-amount {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            white-space: nowrap;
+        }
+        .income-amount { color: #00C087; }
+        .expense-amount { color: #FF6B4A; }
+        .correction-amount { color: #6C8EBF; }
+        .delete-transaction {
+            background: none;
+            border: none;
+            color: #5A5A64;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 40px;
+            transition: 0.1s;
+            margin-left: 4px;
+            min-width: 32px;
+        }
+        .delete-transaction:active {
+            color: #D4AF37;
+            background: rgba(212,175,55,0.1);
+            transform: scale(0.94);
+        }
+        .empty-history {
+            text-align: center;
+            padding: 28px 16px;
+            color: #5E5E68;
+            font-size: 0.75rem;
+            border: 1px dashed rgba(255,255,255,0.05);
+            border-radius: 24px;
+        }
+        
+        .stats-content {
+            background: #0A0B0E;
+            border-radius: 24px;
+            padding: 4px 0;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        .daily-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            border-bottom: 0.5px solid rgba(255,255,255,0.04);
+        }
+        .daily-left {
+            flex: 1;
+        }
+        .daily-date {
+            font-weight: 500;
+            font-size: 0.75rem;
+            color: #E0E0E8;
+            margin-bottom: 4px;
+        }
+        .daily-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .daily-income-row, .daily-expense-row {
+            font-size: 0.6rem;
+        }
+        .daily-income-row {
+            color: #00C087;
+        }
+        .daily-expense-row {
+            color: #FF6B4A;
+        }
+        .daily-profit, .daily-loss {
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        .daily-profit {
+            color: #00C087;
+        }
+        .daily-loss {
+            color: #FF6B4A;
+        }
+        .no-stats {
+            padding: 24px;
+            text-align: center;
+            color: #5E5E68;
+            font-size: 0.7rem;
+        }
+        
+        .badge-usdt {
+            background: rgba(212,175,55,0.12);
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #D4AF37;
+            margin-left: 6px;
+        }
+        
+        .menu-top {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+        }
+        .dropdown-menu {
+            position: relative;
+            display: inline-block;
+        }
+        .menu-btn {
+            background: none;
+            border: 0.5px solid #2D2E35;
+            color: #B0B0B8;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 38px;
+            background: #1A1B1F;
+            border-radius: 20px;
+            border: 1px solid #2D2E35;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            min-width: 140px;
+            overflow: hidden;
+        }
+        .dropdown-content button {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 12px 16px;
+            text-align: left;
+            color: #B0B0B8;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.1s;
+            font-family: inherit;
+        }
+        .dropdown-content button:active {
+            background: rgba(255,255,255,0.05);
+        }
+        .dropdown-content.show {
+            display: block;
+        }
+        
+        footer {
+            font-size: 0.55rem;
+            color: #484850;
+            text-align: center;
+            margin-top: 20px;
+            padding-bottom: 4px;
+        }
+        ::-webkit-scrollbar {
+            width: 3px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #18191E;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3A3B42;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="card">
+        <div class="goal-row">
+            <div class="goal-title" id="goalNameDisplay">Капитал <span class="badge-usdt">USDT</span></div>
+            <div class="goal-badge" id="editGoalBtn">редактировать</div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric">
+                <div class="label">Накоплено</div>
+                <div class="value-large" id="currentAmountDisplay">0 USDT</div>
+            </div>
+            <div class="metric">
+                <div class="label">Цель</div>
+                <div class="value-medium" id="targetAmountDisplay">0 USDT</div>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-stats">
+                <span id="percentSpan">0%</span>
+                <span>Осталось <span id="remainderSpan">0 USDT</span></span>
+            </div>
+        </div>
+
+        <div class="form-area">
+            <div class="form-row">
+                <div class="field">
+                    <label>Тип</label>
+                    <select id="transactionType">
+                        <option value="income">Доход + (USDT)</option>
+                        <option value="expense">Расход − (USDT)</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Сумма (USDT)</label>
+                    <input type="number" id="amountInput" placeholder="0.00" min="0" step="0.01" inputmode="decimal">
+                </div>
+                <div class="field">
+                    <label>Описание</label>
+                    <input type="text" id="noteInput" placeholder="Что это?" enterkeyhint="done">
+                </div>
+                <button id="addTransactionBtn" class="btn">Добавить операцию</button>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <div class="section-header">
+                <span class="section-title">📋 ДАННЫЕ</span>
+                <button id="collapseDataBtn" class="collapse-btn">▼ Свернуть</button>
+            </div>
+            <div id="dataContent" class="data-content">
+                <div class="menu-top">
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <button id="menuBtn" class="menu-btn">•••</button>
+                        <div id="dropdownContent" class="dropdown-content">
+                            <button id="clearHistoryBtn">Очистить всё</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-buttons">
+                    <button id="statsTabBtn" class="tab-btn active">📊 Отчётность</button>
+                    <button id="historyTabBtn" class="tab-btn">📋 История</button>
+                </div>
+                
+                <div id="statsPane" class="tab-pane active">
+                    <div id="dailyStatsContainer" class="stats-content">
+                        <div class="no-stats">Нет данных для отчётности</div>
+                    </div>
+                </div>
+                
+                <div id="historyPane" class="tab-pane">
+                    <div id="historyList" class="history-list">
+                        <div class="empty-history">Нет записей</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>USDT • возможен минус • данные сохраняются на устройстве</footer>
+    </div>
+</div>
+
+<script>
+    let state = {
+        goalName: "Капитал",
+        targetAmount: 10000,
+        currentAmount: 0,
+        transactions: []
+    };
+    
+    let activeTab = 'stats';
+    let isDataCollapsed = false;
+
+    const goalNameDisplay = document.getElementById('goalNameDisplay');
+    const targetAmountDisplay = document.getElementById('targetAmountDisplay');
+    const currentAmountDisplay = document.getElementById('currentAmountDisplay');
+    const progressFill = document.getElementById('progressFill');
+    const remainderSpan = document.getElementById('remainderSpan');
+    const percentSpan = document.getElementById('percentSpan');
+    const historyContainer = document.getElementById('historyList');
+    const transactionType = document.getElementById('transactionType');
+    const amountInput = document.getElementById('amountInput');
+    const noteInput = document.getElementById('noteInput');
+    const addBtn = document.getElementById('addTransactionBtn');
+    const editGoalBtn = document.getElementById('editGoalBtn');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+    const historyTabBtn = document.getElementById('historyTabBtn');
+    const statsTabBtn = document.getElementById('statsTabBtn');
+    const statsPane = document.getElementById('statsPane');
+    const historyPane = document.getElementById('historyPane');
+    const dailyStatsContainer = document.getElementById('dailyStatsContainer');
+    const menuBtn = document.getElementById('menuBtn');
+    const dropdownContent = document.getElementById('dropdownContent');
+    const collapseDataBtn = document.getElementById('collapseDataBtn');
+    const dataContent = document.getElementById('dataContent');
+
+    const formatMoney = (value) => {
+        let num = value;
+        let sign = '';
+        if (num < 0) {
+            sign = '−';
+            num = Math.abs(num);
+        }
+        let formatted = num.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return (sign ? sign + ' ' : '') + formatted + ' USDT';
+    };
+
+    function isCorrectionTransaction(t) {
+        return t.note && (t.note.includes('Корректировка') || t.note.includes('начальная сумма') || t.note.includes('ред. цели'));
+    }
+
+    function recalcBalance() {
+        let balance = 0;
+        for (let t of state.transactions) {
+            if (t.type === 'income') balance += t.amount;
+            else if (t.type === 'expense') balance -= t.amount;
+        }
+        state.currentAmount = balance;
+    }
+
+    function persist() {
+        const toStore = {
+            goalName: state.goalName,
+            targetAmount: state.targetAmount,
+            currentAmount: state.currentAmount,
+            transactions: state.transactions
+        };
+        localStorage.setItem('premium_goal_app_usdt', JSON.stringify(toStore));
+    }
+
+    function loadFromStorage() {
+        const raw = localStorage.getItem('premium_goal_app_usdt');
+        if (raw) {
+            try {
+                const data = JSON.parse(raw);
+                state.goalName = data.goalName || "Капитал";
+                state.targetAmount = (typeof data.targetAmount === 'number' && data.targetAmount > 0) ? data.targetAmount : 10000;
+                state.transactions = Array.isArray(data.transactions) ? data.transactions : [];
+                recalcBalance();
+            } catch(e) { 
+                setDefault(); 
+            }
+        } else {
+            setDefault();
+        }
+        recalcBalance();
+        renderAll();
+    }
+
+    function setDefault() {
+        state.goalName = "Капитал";
+        state.targetAmount = 10000;
+        state.transactions = [];
+        state.currentAmount = 0;
+    }
+
+    function addTransaction(type, amount, note) {
+        if (isNaN(amount) || amount <= 0) {
+            alert("Введите сумму больше нуля (USDT)");
+            return false;
+        }
+        const cleanNote = note.trim() === "" ? (type === 'income' ? "Поступление USDT" : "Списание USDT") : note.trim();
+        const newTransaction = {
+            id: Date.now(),
+            type: type,
+            amount: amount,
+            note: cleanNote,
+            date: new Date().toLocaleString(),
+            timestamp: Date.now()
+        };
+        state.transactions.unshift(newTransaction);
+        recalcBalance();
+        persist();
+        renderAll();
+        return true;
+    }
+
+    function deleteTransaction(id) {
+        state.transactions = state.transactions.filter(t => t.id !== id);
+        recalcBalance();
+        persist();
+        renderAll();
+    }
+
+    function clearAllHistory() {
+        if (confirm("Удалить всю историю? Баланс станет нулевым USDT.")) {
+            state.transactions = [];
+            recalcBalance();
+            persist();
+            renderAll();
+            dropdownContent.classList.remove('show');
+        }
+    }
+
+    function editGoal() {
+        let newName = prompt("Название цели (USDT)", state.goalName);
+        if (newName !== null && newName.trim() !== "") state.goalName = newName.trim();
+        
+        let newTarget = prompt("Целевая сумма (USDT)", state.targetAmount);
+        if (newTarget !== null) {
+            const num = parseFloat(newTarget);
+            if (!isNaN(num) && num > 0) state.targetAmount = num;
+            else if (num <= 0) alert("Сумма должна быть больше нуля");
+        }
+        
+        let newCurrent = prompt("Сколько уже накоплено? (USDT)\nМожно указать отрицательное значение, например -50", state.currentAmount);
+        if (newCurrent !== null && newCurrent.trim() !== "") {
+            const num = parseFloat(newCurrent);
+            if (!isNaN(num)) {
+                const difference = num - state.currentAmount;
+                if (Math.abs(difference) > 0.001) {
+                    const correctionTransaction = {
+                        id: Date.now(),
+                        type: difference > 0 ? 'income' : 'expense',
+                        amount: Math.abs(difference),
+                        note: `Корректировка: установлена сумма ${formatMoney(num)}`,
+                        date: new Date().toLocaleString() + ' (ред. цели)',
+                        timestamp: Date.now()
+                    };
+                    state.transactions.unshift(correctionTransaction);
+                    state.currentAmount = num;
+                }
+            } else {
+                alert("Введите корректное число");
+            }
+        }
+        persist();
+        renderAll();
+    }
+
+    function computeDailyProfitLoss() {
+        const dailyMap = new Map();
+        const realTransactions = state.transactions.filter(t => !isCorrectionTransaction(t));
+        
+        realTransactions.slice().reverse().forEach(t => {
+            let dateKey = '';
+            if (t.date && typeof t.date === 'string') {
+                let parts = t.date.match(/(\d{2})\.(\d{2})\.(\d{4})/);
+                if (parts) {
+                    dateKey = `${parts[3]}-${parts[2]}-${parts[1]}`;
+                } else {
+                    let d = new Date(t.timestamp || t.id);
+                    dateKey = d.toISOString().split('T')[0];
+                }
+            } else {
+                let d = new Date(t.timestamp || t.id);
+                dateKey = d.toISOString().split('T')[0];
+            }
+            if (!dailyMap.has(dateKey)) {
+                dailyMap.set(dateKey, { income: 0, expense: 0, net: 0 });
+            }
+            const entry = dailyMap.get(dateKey);
+            if (t.type === 'income') {
+                entry.income += t.amount;
+                entry.net += t.amount;
+            } else if (t.type === 'expense') {
+                entry.expense += t.amount;
+                entry.net -= t.amount;
+            }
+            dailyMap.set(dateKey, entry);
+        });
+        return Array.from(dailyMap.entries()).map(([date, data]) => ({
+            date,
+            income: data.income,
+            expense: data.expense,
+            net: data.net
+        })).sort((a,b) => b.date.localeCompare(a.date));
+    }
+    
+    function renderDailyStats() {
+        const dailyStats = computeDailyProfitLoss();
+        if (!dailyStats.length) {
+            dailyStatsContainer.innerHTML = `<div class="no-stats">📭 Нет операций для построения отчётности. Добавьте доходы/расходы.</div>`;
+            return;
+        }
+        let html = '';
+        for (let day of dailyStats) {
+            const netColor = day.net >= 0 ? 'daily-profit' : 'daily-loss';
+            const sign = day.net >= 0 ? '+' : '';
+            html += `
+                <div class="daily-item">
+                    <div class="daily-left">
+                        <div class="daily-date">${formatDateHuman(day.date)}</div>
+                        <div class="daily-details">
+                            <div class="daily-income-row">▲ Доход: +${day.income.toFixed(2)} USDT</div>
+                            <div class="daily-expense-row">▼ Расход: -${day.expense.toFixed(2)} USDT</div>
+                        </div>
+                    </div>
+                    <div class="${netColor}">
+                        ${sign}${day.net.toFixed(2)} USDT
+                    </div>
+                </div>
+            `;
+        }
+        dailyStatsContainer.innerHTML = html;
+    }
+    
+    function formatDateHuman(isoDate) {
+        if (!isoDate) return isoDate;
+        const parts = isoDate.split('-');
+        if (parts.length === 3) {
+            return `${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
+        return isoDate;
+    }
+    
+    function switchTab(tab) {
+        activeTab = tab;
+        if (tab === 'history') {
+            historyPane.classList.add('active');
+            statsPane.classList.remove('active');
+            historyTabBtn.classList.add('active');
+            statsTabBtn.classList.remove('active');
+            renderHistoryOnly();
+        } else {
+            historyPane.classList.remove('active');
+            statsPane.classList.add('active');
+            historyTabBtn.classList.remove('active');
+            statsTabBtn.classList.add('active');
+            renderDailyStats();
+        }
+    }
+    
+    function renderHistoryOnly() {
+        if (!state.transactions.length) {
+            historyContainer.innerHTML = `<div class="empty-history">Журнал пуст. Добавьте операцию в USDT</div>`;
+            return;
+        }
+        let html = '';
+        for (let t of state.transactions) {
+            const isIncome = t.type === 'income';
+            const isExpense = t.type === 'expense';
+            let typeClass = '', amountClass = '', typeText = '', sign = '';
+            if (isIncome) {
+                typeClass = 'income-type';
+                amountClass = 'income-amount';
+                typeText = 'ДОХОД +';
+                sign = '+';
+            } else if (isExpense) {
+                typeClass = 'expense-type';
+                amountClass = 'expense-amount';
+                typeText = 'РАСХОД −';
+                sign = '−';
+            }
+            const isCorrection = isCorrectionTransaction(t);
+            if (isCorrection) {
+                typeClass = 'correction-type';
+                amountClass = 'correction-amount';
+                typeText = '✎ КОРРЕКТИРОВКА';
+                sign = (t.type === 'income') ? '+' : '−';
+            }
+            html += `
+                <div class="transaction-item">
+                    <div class="transaction-left">
+                        <div class="transaction-type ${typeClass}">${typeText}</div>
+                        <div class="transaction-note">${escapeHtml(t.note)}</div>
+                        <div class="transaction-date">${escapeHtml(t.date)}</div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div class="transaction-amount ${amountClass}">${sign} ${Math.abs(t.amount).toFixed(2)} USDT</div>
+                        <button class="delete-transaction" data-id="${t.id}">✕</button>
+                    </div>
+                </div>
+            `;
+        }
+        historyContainer.innerHTML = html;
+        document.querySelectorAll('.delete-transaction').forEach(btn => {
+            const id = parseInt(btn.getAttribute('data-id'));
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteTransaction(id);
+            });
+        });
+    }
+    
+    function renderAll() {
+        goalNameDisplay.innerHTML = `${escapeHtml(state.goalName)} <span class="badge-usdt">USDT</span>`;
+        targetAmountDisplay.innerText = formatMoney(state.targetAmount);
+        const currentValue = state.currentAmount;
+        currentAmountDisplay.innerText = formatMoney(currentValue);
+        if (currentValue < 0) {
+            currentAmountDisplay.classList.add('value-negative');
+        } else {
+            currentAmountDisplay.classList.remove('value-negative');
+        }
+        
+        let percent = 0;
+        if (state.currentAmount < 0) {
+            percent = 0;
+        } else {
+            percent = (state.currentAmount / state.targetAmount) * 100;
+        }
+        const percentClamped = Math.min(100, Math.max(0, percent));
+        progressFill.style.width = `${percentClamped}%`;
+        percentSpan.innerText = `${Math.floor(percentClamped)}%`;
+        
+        if (state.currentAmount < 0) {
+            remainderSpan.innerText = `перерасход ${formatMoney(Math.abs(state.currentAmount))}`;
+        } else {
+            const remainder = Math.max(0, state.targetAmount - state.currentAmount);
+            remainderSpan.innerText = formatMoney(remainder);
+        }
+        
+        if (activeTab === 'history') {
+            renderHistoryOnly();
+        } else {
+            renderDailyStats();
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function handleAdd() {
+        const type = transactionType.value;
+        let amount = parseFloat(amountInput.value);
+        const note = noteInput.value;
+        if (isNaN(amount) || amount <= 0) {
+            alert("Введите сумму больше нуля (USDT)");
+            return;
+        }
+        amount = Math.round(amount * 100) / 100;
+        addTransaction(type, amount, note);
+        amountInput.value = '';
+        noteInput.value = '';
+        amountInput.focus();
+    }
+
+    function handleKeyboardSubmit(e) {
+        if (e.key === 'Enter' && (e.target === amountInput || e.target === noteInput)) {
+            e.preventDefault();
+            handleAdd();
+        }
+    }
+    
+    function toggleDropdown(e) {
+        e.stopPropagation();
+        dropdownContent.classList.toggle('show');
+    }
+    
+    function closeDropdown(e) {
+        if (!document.getElementById('dropdownMenu')?.contains(e.target)) {
+            dropdownContent.classList.remove('show');
+        }
+    }
+    
+    function toggleDataCollapse() {
+        isDataCollapsed = !isDataCollapsed;
+        if (isDataCollapsed) {
+            dataContent.classList.add('collapsed');
+            collapseDataBtn.innerHTML = '▲ Развернуть';
+        } else {
+            dataContent.classList.remove('collapsed');
+            collapseDataBtn.innerHTML = '▼ Свернуть';
+        }
+    }
+
+    function bind() {
+        addBtn.addEventListener('click', handleAdd);
+        editGoalBtn.addEventListener('click', editGoal);
+        clearHistoryBtn.addEventListener('click', clearAllHistory);
+        amountInput.addEventListener('keypress', handleKeyboardSubmit);
+        noteInput.addEventListener('keypress', handleKeyboardSubmit);
+        menuBtn.addEventListener('click', toggleDropdown);
+        document.addEventListener('click', closeDropdown);
+        historyTabBtn.addEventListener('click', () => switchTab('history'));
+        statsTabBtn.addEventListener('click', () => switchTab('stats'));
+        collapseDataBtn.addEventListener('click', toggleDataCollapse);
+    }
+
+    loadFromStorage();
+    bind();
+    
+    // Регистрация Service Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('SW registered:', reg))
+                .catch(err => console.log('SW error:', err));
+        });
+    }
+</script>
+</body>
+</html>
