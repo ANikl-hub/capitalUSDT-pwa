@@ -1,13 +1,12 @@
-const CACHE_NAME = 'capital-usdt-v1.0.0';
+const CACHE_NAME = 'capital-usdt-v1.0.1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/capitalUSDT-pwa/',
+  '/capitalUSDT-pwa/index.html',
+  '/capitalUSDT-pwa/manifest.json',
+  '/capitalUSDT-pwa/icon-192.png',
+  '/capitalUSDT-pwa/icon-512.png'
 ];
 
-// Установка Service Worker и кэширование файлов
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -19,12 +18,10 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Обработка запросов: сначала сеть, при ошибке — кэш
 self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        // Клонируем ответ для кэша
         const responseClone = response.clone();
         caches.open(CACHE_NAME).then(cache => {
           cache.put(event.request, responseClone);
@@ -37,7 +34,6 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// Обновление кэша при активации нового SW
 self.addEventListener('activate', event => {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
