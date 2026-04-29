@@ -990,4 +990,26 @@
     function bind() {
         addBtn.addEventListener('click', handleAdd);
         editGoalBtn.addEventListener('click', editGoal);
-        clearHistoryBtn.addEventListener('click
+        clearHistoryBtn.addEventListener('click', clearAllHistory);
+        amountInput.addEventListener('keypress', handleKeyboardSubmit);
+        noteInput.addEventListener('keypress', handleKeyboardSubmit);
+        menuBtn.addEventListener('click', toggleDropdown);
+        document.addEventListener('click', closeDropdown);
+        historyTabBtn.addEventListener('click', () => switchTab('history'));
+        statsTabBtn.addEventListener('click', () => switchTab('stats'));
+        collapseDataBtn.addEventListener('click', toggleDataCollapse);
+    }
+
+    loadFromStorage();
+    bind();
+    
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/capitalUSDT-pwa/sw.js')
+                .then(reg => console.log('SW registered:', reg))
+                .catch(err => console.log('SW error:', err));
+        });
+    }
+</script>
+</body>
+</html>
