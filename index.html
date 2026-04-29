@@ -535,7 +535,7 @@
                 </div>
                 <div class="field">
                     <label>Сумма (USDT)</label>
-                    <input type="number" id="amountInput" placeholder="0.00" min="0" step="0.01" inputmode="decimal">
+                    <input type="text" id="amountInput" placeholder="0.00" inputmode="decimal" pattern="[0-9.,]*">
                 </div>
                 <div class="field">
                     <label>Описание</label>
@@ -617,7 +617,14 @@
     const collapseDataBtn = document.getElementById('collapseDataBtn');
     const dataContent = document.getElementById('dataContent');
 
-    // ИСПРАВЛЕННАЯ функция форматирования — показывает 2 знака после запятой ВСЕГДА
+    // Функция для преобразования запятой в точку
+    function parseAmount(value) {
+        if (!value) return NaN;
+        let str = String(value).trim();
+        str = str.replace(',', '.');
+        return parseFloat(str);
+    }
+
     const formatMoney = (value) => {
         let num = value;
         let sign = '';
@@ -625,7 +632,6 @@
             sign = '−';
             num = Math.abs(num);
         }
-        // Всегда показываем 2 знака после запятой, даже если .00
         let formatted = num.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         return (sign ? sign + ' ' : '') + formatted + ' USDT';
     };
@@ -723,14 +729,14 @@
         
         let newTarget = prompt("Целевая сумма (USDT)", state.targetAmount);
         if (newTarget !== null) {
-            const num = parseFloat(newTarget);
+            let num = parseAmount(newTarget);
             if (!isNaN(num) && num > 0) state.targetAmount = num;
             else if (num <= 0) alert("Сумма должна быть больше нуля");
         }
         
         let newCurrent = prompt("Какой начальный банк? (USDT)", state.currentAmount);
         if (newCurrent !== null && newCurrent.trim() !== "") {
-            const num = parseFloat(newCurrent);
+            let num = parseAmount(newCurrent);
             if (!isNaN(num)) {
                 const difference = num - state.currentAmount;
                 if (Math.abs(difference) > 0.001) {
@@ -945,7 +951,7 @@
 
     function handleAdd() {
         const type = transactionType.value;
-        let amount = parseFloat(amountInput.value);
+        let amount = parseAmount(amountInput.value);
         const note = noteInput.value;
         if (isNaN(amount) || amount <= 0) {
             alert("Введите сумму больше нуля (USDT)");
