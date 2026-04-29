@@ -1,4 +1,4 @@
-const CACHE_NAME = 'capital-usdt-v1.0.1';
+const CACHE_NAME = 'capital-usdt-v1.0.2';
 const urlsToCache = [
   '/capitalUSDT-pwa/',
   '/capitalUSDT-pwa/index.html',
